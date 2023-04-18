@@ -4,7 +4,7 @@ pipeline {
     }
     options {
 //      PREPEND TIMESTAMP FOR EVERY LOG IN CONSOLE
-        timestamp()
+        timestamps()
 
         buildDiscarder(logRotator(numToKeepStr: '20'))
     }
