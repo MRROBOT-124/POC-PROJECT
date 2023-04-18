@@ -12,7 +12,6 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-
                 echo "STARTING GRADLE BUILD"
                 sh './gradlew build'
                 echo "GRADLE BUILD COMPLETED SUCCESSFULLY"
