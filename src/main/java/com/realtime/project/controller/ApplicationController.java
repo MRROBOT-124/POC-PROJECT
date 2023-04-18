@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/v1")
 public class ApplicationController {
 
+
     /**
      * Simple API that returns
      * Hello World! response
