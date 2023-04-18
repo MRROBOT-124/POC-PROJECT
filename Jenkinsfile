@@ -1,8 +1,10 @@
 pipeline {
-    agent "JenkinsAgent"
+    agent {
+        label "JenkinsAgent"
+    }
     options {
 //      PREPEND TIMESTAMP FOR EVERY LOG IN CONSOLE
-        timestamp()
+        timestamps()
 
         buildDiscarder(logRotator(numToKeepStr: '20'))
     }
@@ -10,7 +12,8 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'gradle build'
+                echo "STARTING GRADLE BUILD"
+                sh './gradlew build'
             }
         }
     }
