@@ -17,12 +17,16 @@ pipeline {
         }
         stage('SonarQube analysis') {
             steps {
-                tools {
-                    sonarQube 'SonarQube Scanner 2.8'
+                script {
+                    // requires SonarQube Scanner 2.8+
+                    scannerHome = tool 'SonarQube Scanner 4.8.0.2856'
                 }
-                withSonarQubeEnv() { // Will pick the global server connection you have configured
-                  sh './gradlew sonarqube'
+                withSonarQubeEnv('SonarQube Scanner') {
+                    sh "${scannerHome}/bin/sonar-scanner"
                 }
+//                 withSonarQubeEnv() { // Will pick the global server connection you have configured
+//                     sh './gradlew sonarqube'
+//                 }
             }
         }
         stage("Quality Gate") {
