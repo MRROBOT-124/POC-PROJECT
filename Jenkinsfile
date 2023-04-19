@@ -30,9 +30,12 @@ pipeline {
 
         stage('SonarQube analysis') {
             steps {
-                withSonarQubeEnv(installationName: 'Sonar') { // Will pick the global server connection you have configured
+                echo "STARTING SONARQUBE SCAN"
+                withSonarQubeEnv(installationName: 'Sonar') {
+                    // Will pick the global server connection you have configured
                     sh './gradlew sonar -Dsonar.login="admin" -Dsonar.password="appu99vinod"'
                 }
+                echo "SONARQUBE SCAN SUCCESSFULLY COMPLETED"
             }
         }
 
