@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        label "JenkinsAgent"
-    }
+    agent any
     options {
 //      PREPEND TIMESTAMP FOR EVERY LOG IN CONSOLE
         timestamps()
