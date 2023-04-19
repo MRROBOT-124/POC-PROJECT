@@ -10,6 +10,23 @@ pipeline {
     }
 
     stages {
+        stage('SCM') {
+            git 'https://github.com/MRROBOT-124/POC-PROJECT.git'
+        }
+        stage('SonarQube analysis') {
+            withSonarQubeEnv() { // Will pick the global server connection you have configured
+              sh './gradlew sonarqube'
+            }
+        }
+        stage("Quality Gate") {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+                    // true = set pipeline to UNSTABLE, false = don't
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
         stage('Build') {
             steps {
                 echo "STARTING GRADLE BUILD"
@@ -17,5 +34,7 @@ pipeline {
                 echo "GRADLE BUILD COMPLETED SUCCESSFULLY"
             }
         }
+
+
     }
 }
