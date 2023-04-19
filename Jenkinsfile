@@ -33,7 +33,7 @@ pipeline {
                 echo "STARTING SONARQUBE SCAN"
                 withSonarQubeEnv(installationName: 'Sonar') {
                     // Will pick the global server connection you have configured
-                    sh './gradlew sonar -Dsonar.login="admin" -Dsonar.password="appu99vinod"'
+                    sh './gradlew sonar'
                 }
                 echo "SONARQUBE SCAN SUCCESSFULLY COMPLETED"
             }
@@ -45,6 +45,7 @@ pipeline {
                     // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
                     // true = set pipeline to UNSTABLE, false = don't
                     waitForQualityGate abortPipeline: true
+
                 }
             }
         }
