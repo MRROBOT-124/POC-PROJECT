@@ -11,11 +11,15 @@ pipeline {
 
     stages {
         stage('SCM') {
-            git 'https://github.com/MRROBOT-124/POC-PROJECT.git'
+            steps {
+                git 'https://github.com/MRROBOT-124/POC-PROJECT.git'
+            }
         }
         stage('SonarQube analysis') {
-            withSonarQubeEnv() { // Will pick the global server connection you have configured
-              sh './gradlew sonarqube'
+            steps {
+                withSonarQubeEnv() { // Will pick the global server connection you have configured
+                  sh './gradlew sonarqube'
+                }
             }
         }
         stage("Quality Gate") {
