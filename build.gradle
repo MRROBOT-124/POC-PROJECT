@@ -62,7 +62,7 @@ sonar {
 		property "sonar.projectKey", "project"
 		property "sonar.projectName", "project"
 		property "sonar.login", "admin"
-		property "sonar.password", "S$nk*B@k*G)"
+		property "sonar.password", 'S$nk*B@k*G)'
 	}
 }
 
