@@ -1,9 +1,13 @@
 package com.realtime.project.service;
 
+import com.realtime.project.constants.AuthenticationMethodEnum;
+import com.realtime.project.constants.AuthorizationGrantTypeEnum;
 import com.realtime.project.entity.AuthenticationMethod;
 import com.realtime.project.entity.Client;
+import com.realtime.project.entity.GrantType;
 import com.realtime.project.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
@@ -25,6 +29,8 @@ public class RegisteredClientService implements RegisteredClientRepository {
 
     @Autowired
     private ClientRepository clientRepository;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     /**
      * PERSIST CLIENT DETAILS TO THE DATABASE
@@ -34,7 +40,32 @@ public class RegisteredClientService implements RegisteredClientRepository {
      */
     @Override
     public void save(RegisteredClient registeredClient) {
-        clientRepository.save(new Client(registeredClient));
+        Client client = Client.builder().clientId(registeredClient.getClientId())
+                        .clientSecret(registeredClient.getClientSecret())
+                        .clientIdIssuedAt(registeredClient.getClientIdIssuedAt())
+                        .clientSecretExpiresAt(registeredClient.getClientSecretExpiresAt())
+                        .clientAuthenticationMethods(registeredClient.getClientAuthenticationMethods().stream()
+                            .map(i -> {
+                                if(i.equals(AuthenticationMethodEnum.client_secret_basic)) {
+                                     return AuthenticationMethod.builder().value(AuthenticationMethodEnum.client_secret_basic).build();
+                                }
+                                return null;
+
+                            }).collect(Collectors.toSet()))
+                .authorizationGrantTypes(registeredClient.getAuthorizationGrantTypes().stream()
+                        .map(grant -> {
+                            if(grant.equals(AuthorizationGrantTypeEnum.authorization_code)) {
+                                return GrantType.builder().value(AuthorizationGrantTypeEnum.authorization_code).build();
+                            }
+                            else if(grant.equals(AuthorizationGrantTypeEnum.client_credentials)) {
+                                return GrantType.builder().value(AuthorizationGrantTypeEnum.client_credentials).build();
+                            }
+                            return GrantType.builder().value(AuthorizationGrantTypeEnum.refresh_token).build();
+                        }).collect(Collectors.toSet()))
+                .scopes(registeredClient.getScopes().stream().collect(Collectors.joining(",")))
+                .redirectUris(registeredClient.getRedirectUris().stream().collect(Collectors.joining(",")))
+                .build();
+        clientRepository.save(client);
     }
 
 
@@ -45,6 +76,7 @@ public class RegisteredClientService implements RegisteredClientRepository {
      * @param client the {@link Client}
      */
     public Client save(Client client) {
+        client.setClientSecret(passwordEncoder.encode(client.getClientSecret()));
         return clientRepository.save(client);
     }
 

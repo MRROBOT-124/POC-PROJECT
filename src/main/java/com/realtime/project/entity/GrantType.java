@@ -3,10 +3,7 @@ package com.realtime.project.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.realtime.project.constants.AuthorizationGrantTypeEnum;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 
 /**
@@ -18,7 +15,9 @@ import org.springframework.security.core.SpringSecurityCoreVersion;
 @Setter
 @Entity
 @Table
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class GrantType {
 
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;

@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.realtime.project.constants.AuthenticationMethodEnum;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 
 import java.io.Serializable;
@@ -22,7 +19,9 @@ import java.io.Serializable;
 @Setter
 @Entity
 @Table
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class AuthenticationMethod implements Serializable {
 
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;

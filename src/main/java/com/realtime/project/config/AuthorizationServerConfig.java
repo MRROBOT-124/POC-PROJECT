@@ -4,6 +4,7 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.realtime.project.constants.HelperConstants;
 import com.realtime.project.service.RegisteredClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -57,10 +58,11 @@ public class AuthorizationServerConfig{
     public SecurityFilterChain authServerSecurityFilterChain(HttpSecurity http) throws Exception {
 
         return http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(req -> req.requestMatchers(HttpMethod.GET, "/client/get").permitAll())
-                .authorizeHttpRequests(req -> req.requestMatchers(HttpMethod.POST, "/client/add").permitAll())
-                .authorizeHttpRequests(req -> req.requestMatchers("/oauth2/*").permitAll())
+                .authorizeHttpRequests(req -> req.requestMatchers(HelperConstants.ALLOW_ALL_CLIENT_ROUTES).permitAll())
+                .authorizeHttpRequests(req -> req.requestMatchers( HelperConstants.ALLOW_ALL_USER_ROUTES).permitAll())
+                .authorizeHttpRequests(req -> req.requestMatchers(HelperConstants.ALLOW_ALL_OAUTH2_ROUTES).permitAll())
                 .authorizeHttpRequests(req -> req.anyRequest().authenticated())
+                .formLogin(Customizer.withDefaults())
                .build();
     }
 
@@ -89,7 +91,7 @@ public class AuthorizationServerConfig{
     }
 
     private static KeyPair generateRsaKey() throws NoSuchAlgorithmException {
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(HelperConstants.RSA);
         keyPairGenerator.initialize(2048);
         return keyPairGenerator.generateKeyPair();
     }

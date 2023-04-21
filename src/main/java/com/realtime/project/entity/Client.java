@@ -3,10 +3,7 @@ package com.realtime.project.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.util.SpringAuthorizationServerVersion;
 
@@ -26,10 +23,14 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Client implements Serializable {
 
     private static final long serialVersionUID = SpringAuthorizationServerVersion.SERIAL_VERSION_UID;
     @Id
+    @Builder.Default
     private String id = UUID.randomUUID().toString() + "_" + LocalDateTime.now();
     private String clientId;
     private Instant clientIdIssuedAt;
@@ -39,19 +40,15 @@ public class Client implements Serializable {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, mappedBy = "client",
             orphanRemoval = true, targetEntity = AuthenticationMethod.class, fetch = FetchType.EAGER)
     @JsonManagedReference
+    @Builder.Default
     private Set<AuthenticationMethod> clientAuthenticationMethods = new HashSet<>();
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, mappedBy = "client",
             orphanRemoval = true, targetEntity = GrantType.class, fetch = FetchType.EAGER)
+    @Builder.Default
     private Set<GrantType> authorizationGrantTypes = new HashSet<>();
     private String redirectUris;
     private String scopes;
 
-    public Client() {}
-
-    public Client(RegisteredClient registeredClient) {
-        this.clientId = registeredClient.getClientId();
-        this.clientName = registeredClient.getClientName();
-    }
 
     /**
      * UTILITY METHODS FOR RELATIONSHIP MAPPING
