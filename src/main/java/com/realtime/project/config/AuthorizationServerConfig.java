@@ -60,6 +60,7 @@ public class AuthorizationServerConfig{
                 .authorizeHttpRequests(req -> req.requestMatchers(HttpMethod.GET, "/client/get").permitAll())
                 .authorizeHttpRequests(req -> req.requestMatchers(HttpMethod.POST, "/client/add").permitAll())
                 .authorizeHttpRequests(req -> req.requestMatchers("/oauth2/*").permitAll())
+                .authorizeHttpRequests(req -> req.anyRequest().authenticated())
                .build();
     }
 
