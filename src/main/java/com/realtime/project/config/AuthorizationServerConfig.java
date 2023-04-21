@@ -4,11 +4,14 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.realtime.project.service.RegisteredClientService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -18,8 +21,10 @@ import org.springframework.security.oauth2.server.authorization.client.InMemoryR
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -33,31 +38,10 @@ import java.util.UUID;
  * CONFIGURATION DETAILS
  */
 @Configuration
-public class AuthorizationServerConfig {
+@Import(OAuth2AuthorizationServerConfiguration.class)
+public class AuthorizationServerConfig{
 
 
-    /**
-     * CREATING AN IN-MEMORY CLIENT WITH GRANT TYPE CLIENT_CREDENTIALS
-     * FUTURE IMPLEMENTATION THE CLIENT DETAILS WON'T BE HARDCODED, INSTEAD
-     * IT WILL COME FROM THE DATABASE
-     * @return
-     */
-    @Bean
-    public RegisteredClientRepository registeredClientRepository() {
-        RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("articles-client")
-                .clientSecret("{noop}secret")
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .redirectUri("http://127.0.0.1:8081/login/oauth2/code/articles-client-oidc")
-                .redirectUri("http://127.0.0.1:8081/authorized")
-                .scope(OidcScopes.OPENID)
-                .scope("articles.read")
-                .build();
-        return new InMemoryRegisteredClientRepository(registeredClient);
-    }
 
     /**
      * SETTING THE DEFAULT SECURITY CONFIGURATIONS AVAILABLE
@@ -71,9 +55,15 @@ public class AuthorizationServerConfig {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authServerSecurityFilterChain(HttpSecurity http) throws Exception {
-        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-        return http.formLogin(Customizer.withDefaults()).build();
+
+        return http.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(req -> req.requestMatchers(HttpMethod.GET, "/client/get").permitAll())
+                .authorizeHttpRequests(req -> req.requestMatchers(HttpMethod.POST, "/client/add").permitAll())
+                .authorizeHttpRequests(req -> req.requestMatchers("/oauth2/*").permitAll())
+               .build();
     }
+
+
 
     /**
      * USED TO SET UP THE JWT ACCESS TOKEN WHICH WILL BE SENT AS A RESPONSE
