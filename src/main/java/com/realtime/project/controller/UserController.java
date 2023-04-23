@@ -1,7 +1,7 @@
 package com.realtime.project.controller;
 
 import com.realtime.project.entity.UserInfo;
-import com.realtime.project.service.UserDetailsService;
+import com.realtime.project.service.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 public class UserController {
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserInfoService userDetailsService;
 
     /**
      * USED TO REGISTER A NEW USER

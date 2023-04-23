@@ -5,7 +5,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.realtime.project.entity.UserInfo;
-import com.realtime.project.service.UserDetailsService;
+import com.realtime.project.service.UserInfoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -28,7 +28,7 @@ class UserControllerTest {
 
     private MockMvc mockMvc;
     @MockBean
-    private UserDetailsService userDetailsService;
+    private UserInfoService userDetailsService;
 
     @Autowired
     private WebApplicationContext webApplicationContext;

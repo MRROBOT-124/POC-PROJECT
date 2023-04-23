@@ -27,7 +27,7 @@ class UserDetailsServiceTest {
     private BCryptPasswordEncoder passwordEncoder;
 
     @InjectMocks
-    private UserDetailsService userDetailsService;
+    private UserInfoService userDetailsService;
 
     @Test
     void testLoadUserByUsername() {
