@@ -3,7 +3,8 @@ package com.realtime.project.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
+
+import java.io.Serializable;
 
 /**
  * POJO CLASS THAT IS A REPRESENTATION OF THE DATABASE TABLE
@@ -16,15 +17,15 @@ import org.springframework.security.core.GrantedAuthority;
 @Table
 @Builder
 @AllArgsConstructor
-public class Authorities {
+public class Authorities implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String authority;
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, targetEntity = UserDetails.class, optional = false)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, targetEntity = UserInfo.class, optional = false)
     @JoinColumn(referencedColumnName = "username")
     @JsonIgnore
-    private UserDetails userDetails;
+    private UserInfo userDetails;
 
 }

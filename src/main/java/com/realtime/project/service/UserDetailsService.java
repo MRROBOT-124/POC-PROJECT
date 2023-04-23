@@ -1,16 +1,14 @@
 package com.realtime.project.service;
 
-import com.realtime.project.entity.Authorities;
+import com.realtime.project.entity.UserInfo;
 import com.realtime.project.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * STORE USER DETAILS STORED IN POSTGRESQL DATABASE
@@ -34,7 +32,7 @@ public class UserDetailsService implements org.springframework.security.core.use
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<com.realtime.project.entity.UserDetails> optionalUserDetails = userRepository.findById(username);
+        Optional<UserInfo> optionalUserDetails = userRepository.findById(username);
         return optionalUserDetails.get();
     }
 
@@ -43,7 +41,7 @@ public class UserDetailsService implements org.springframework.security.core.use
      * @param userDetails
      * @return
      */
-    public com.realtime.project.entity.UserDetails persistUser(com.realtime.project.entity.UserDetails userDetails) {
+    public UserInfo persistUser(UserInfo userDetails) {
         userDetails.setAuthorities(userDetails.getAuthoritiesList());
         userDetails.setPassword(bCryptPasswordEncoder.encode(userDetails.getPassword()));
         return userRepository.save(userDetails);

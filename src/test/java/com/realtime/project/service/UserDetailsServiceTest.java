@@ -1,6 +1,6 @@
 package com.realtime.project.service;
 
-import com.realtime.project.entity.UserDetails;
+import com.realtime.project.entity.UserInfo;
 import com.realtime.project.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
@@ -31,7 +31,7 @@ class UserDetailsServiceTest {
 
     @Test
     void testLoadUserByUsername() {
-        UserDetails userDetails = UserDetails.builder().username("mock")
+        UserInfo userDetails = UserInfo.builder().username("mock")
                         .password("mock").email("mock").build();
         Mockito.when(userRepository.findById(anyString())).thenReturn(Optional.of(userDetails));
         org.springframework.security.core.userdetails.UserDetails userByUsername = userDetailsService.loadUserByUsername(userDetails.getUsername());
@@ -41,12 +41,12 @@ class UserDetailsServiceTest {
 
     @Test
     void testPersistUser() {
-        UserDetails userDetails = UserDetails.builder().username("mock")
+        UserInfo userDetails = UserInfo.builder().username("mock")
                 .password("mock").email("mock").build();
-        Mockito.when(userRepository.save(any(UserDetails.class)))
+        Mockito.when(userRepository.save(any(UserInfo.class)))
                 .thenReturn(userDetails);
-        UserDetails persistUser = userDetailsService.persistUser(userDetails);
-        Mockito.verify(userRepository, Mockito.atMostOnce()).save(any(UserDetails.class));
+        UserInfo persistUser = userDetailsService.persistUser(userDetails);
+        Mockito.verify(userRepository, Mockito.atMostOnce()).save(any(UserInfo.class));
         assertEquals(persistUser.getUsername(), userDetails.getUsername());
 
     }

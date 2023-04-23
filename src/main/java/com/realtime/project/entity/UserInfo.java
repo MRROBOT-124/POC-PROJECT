@@ -1,6 +1,5 @@
 package com.realtime.project.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -8,7 +7,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,7 +23,7 @@ import java.util.stream.Collectors;
 @Table
 @Builder
 @AllArgsConstructor
-public class UserDetails implements org.springframework.security.core.userdetails.UserDetails, Serializable {
+public class UserInfo implements org.springframework.security.core.userdetails.UserDetails, Serializable {
 
     @Id
     private String username;

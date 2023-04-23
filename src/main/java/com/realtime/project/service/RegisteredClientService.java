@@ -6,6 +6,7 @@ import com.realtime.project.entity.AuthenticationMethod;
 import com.realtime.project.entity.Client;
 import com.realtime.project.entity.GrantType;
 import com.realtime.project.repository.ClientRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -14,9 +15,7 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -24,6 +23,7 @@ import java.util.stream.Collectors;
  * THIS CLASS CONTAINS METHODS THAT CAN PULL THE NECESSARY RECORDS
  * NEEDED.
  */
+@Slf4j
 @Service
 public class RegisteredClientService implements RegisteredClientRepository {
 
@@ -40,32 +40,34 @@ public class RegisteredClientService implements RegisteredClientRepository {
      */
     @Override
     public void save(RegisteredClient registeredClient) {
+        log.info("Entered RegisteredClientService ---> save() --> Attempting to persist client information");
         Client client = Client.builder().clientId(registeredClient.getClientId())
                         .clientSecret(registeredClient.getClientSecret())
                         .clientIdIssuedAt(registeredClient.getClientIdIssuedAt())
                         .clientSecretExpiresAt(registeredClient.getClientSecretExpiresAt())
                         .clientAuthenticationMethods(registeredClient.getClientAuthenticationMethods().stream()
                             .map(i -> {
-                                if(i.equals(AuthenticationMethodEnum.client_secret_basic)) {
-                                     return AuthenticationMethod.builder().value(AuthenticationMethodEnum.client_secret_basic).build();
+                                if(i.getValue().equalsIgnoreCase(AuthenticationMethodEnum.CLIENT_SECRET_BASIC.toString())) {
+                                     return AuthenticationMethod.builder().value(AuthenticationMethodEnum.CLIENT_SECRET_BASIC).build();
                                 }
                                 return null;
 
                             }).collect(Collectors.toSet()))
                 .authorizationGrantTypes(registeredClient.getAuthorizationGrantTypes().stream()
                         .map(grant -> {
-                            if(grant.equals(AuthorizationGrantTypeEnum.authorization_code)) {
-                                return GrantType.builder().value(AuthorizationGrantTypeEnum.authorization_code).build();
+                            if(grant.getValue().equalsIgnoreCase(AuthorizationGrantTypeEnum.AUTHORIZATION_CODE.toString())) {
+                                return GrantType.builder().value(AuthorizationGrantTypeEnum.AUTHORIZATION_CODE).build();
                             }
-                            else if(grant.equals(AuthorizationGrantTypeEnum.client_credentials)) {
-                                return GrantType.builder().value(AuthorizationGrantTypeEnum.client_credentials).build();
+                            else if(grant.getValue().equalsIgnoreCase(AuthorizationGrantTypeEnum.CLIENT_CREDENTIALS.toString())) {
+                                return GrantType.builder().value(AuthorizationGrantTypeEnum.CLIENT_CREDENTIALS).build();
                             }
-                            return GrantType.builder().value(AuthorizationGrantTypeEnum.refresh_token).build();
+                            return GrantType.builder().value(AuthorizationGrantTypeEnum.REFRESH_TOKEN).build();
                         }).collect(Collectors.toSet()))
                 .scopes(registeredClient.getScopes().stream().collect(Collectors.joining(",")))
                 .redirectUris(registeredClient.getRedirectUris().stream().collect(Collectors.joining(",")))
                 .build();
         clientRepository.save(client);
+        log.info("Exited RegisteredClientService ---> save() ---> Successfully persisted data");
     }
 
 
@@ -76,7 +78,9 @@ public class RegisteredClientService implements RegisteredClientRepository {
      * @param client the {@link Client}
      */
     public Client save(Client client) {
+        log.info("Entered RegisteredClientService ---> save() --> Attempting to persist client information");
         client.setClientSecret(passwordEncoder.encode(client.getClientSecret()));
+        log.info("Exited RegisteredClientService ---> save() ---> Successfully persisted data");
         return clientRepository.save(client);
     }
 
@@ -89,7 +93,12 @@ public class RegisteredClientService implements RegisteredClientRepository {
      */
     @Override
     public RegisteredClient findById(String id) {
+        log.info("Entered RegisteredClientService ---> findById() ---> Attempting to find client details by using random generated id for the client");
         Optional<Client> optionalClient = clientRepository.findById(id);
+        if(!optionalClient.isPresent()) {
+            log.error("Client does not exists under the following id: {}", id);
+            return null;
+        }
         RegisteredClient.Builder builder = RegisteredClient.withId(optionalClient.get().getId());
 
         builder.clientId(optionalClient.get().getClientId())
@@ -102,6 +111,7 @@ public class RegisteredClientService implements RegisteredClientRepository {
         optionalClient.get().getAuthorizationGrantTypes().forEach(grant -> {
             builder.authorizationGrantType(new AuthorizationGrantType(grant.getValue().toString()));
         });
+        log.info("Exited RegisteredClientService ---> findById() ---> Client Found for the following id: {}", id);
         return builder.redirectUri(optionalClient.get().getRedirectUris())
                 .clientIdIssuedAt(optionalClient.get().getClientIdIssuedAt())
                 .clientSecretExpiresAt(optionalClient.get().getClientSecretExpiresAt())
@@ -117,7 +127,12 @@ public class RegisteredClientService implements RegisteredClientRepository {
      */
     @Override
     public RegisteredClient findByClientId(String clientId) {
+        log.info("Entered RegisteredClientService ---> findById() ---> Attempting to find client details by using random generated id for the client");
         Optional<Client> optionalClient = clientRepository.findByClientId(clientId);
+        if(!optionalClient.isPresent()) {
+            log.error("Client does not exists under the following id: {}", clientId);
+            return null;
+        }
         RegisteredClient.Builder builder = RegisteredClient.withId(optionalClient.get().getId());
         builder.clientId(optionalClient.get().getClientId())
                 .clientName(optionalClient.get().getClientName())
@@ -129,6 +144,7 @@ public class RegisteredClientService implements RegisteredClientRepository {
         optionalClient.get().getAuthorizationGrantTypes().forEach(grant -> {
             builder.authorizationGrantType(new AuthorizationGrantType(grant.getValue().toString()));
         });
+        log.info("Exited RegisteredClientService ---> findById() ---> Client Found for the following clientId: {}", clientId);
         return builder.redirectUri(optionalClient.get().getRedirectUris())
                 .clientIdIssuedAt(optionalClient.get().getClientIdIssuedAt())
                 .clientSecretExpiresAt(optionalClient.get().getClientSecretExpiresAt())
