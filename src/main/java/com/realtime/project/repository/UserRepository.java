@@ -1,6 +1,6 @@
 package com.realtime.project.repository;
 
-import com.realtime.project.entity.UserDetails;
+import com.realtime.project.entity.UserInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
  * OPERATIONS FOR THE USER
  */
 @Repository
-public interface UserRepository extends JpaRepository<UserDetails, String> {
+public interface UserRepository extends JpaRepository<UserInfo, String> {
 }

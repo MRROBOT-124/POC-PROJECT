@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 
+import java.io.Serializable;
+
 /**
  * POJO CLASS HOLDS THE GRANTS AVAILABLE
  * SEE @AuthorizationGrantTypeEnum FOR THE
@@ -18,7 +20,7 @@ import org.springframework.security.core.SpringSecurityCoreVersion;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GrantType {
+public class GrantType implements Serializable {
 
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
     @Id

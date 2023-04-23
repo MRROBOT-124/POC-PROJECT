@@ -1,5 +1,5 @@
 package com.realtime.project.constants;
 
 public enum AuthenticationMethodEnum {
-    client_secret_basic,client_secret_post,client_secret_jwt,private_key_jwt,none
+    CLIENT_SECRET_BASIC,CLIENT_SECRET_POST,CLIENT_SECRET_JWT,PRIVATE_KEY_JWT,NONE
 }

@@ -10,7 +10,6 @@ import com.realtime.project.entity.AuthenticationMethod;
 import com.realtime.project.entity.Client;
 import com.realtime.project.entity.GrantType;
 import com.realtime.project.service.RegisteredClientService;
-import com.realtime.project.service.UserDetailsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -28,7 +27,6 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -55,8 +53,8 @@ class ClientControllerTest {
         Client client = Client.builder().id("mock").clientId("mock")
                 .clientSecret("mock")
                 .clientName("mock")
-                .authorizationGrantTypes(new HashSet<>(Arrays.asList(GrantType.builder().value(AuthorizationGrantTypeEnum.authorization_code).build())))
-                .clientAuthenticationMethods(new HashSet<>(Arrays.asList(AuthenticationMethod.builder().value(AuthenticationMethodEnum.client_secret_basic).build())))
+                .authorizationGrantTypes(new HashSet<>(Arrays.asList(GrantType.builder().value(AuthorizationGrantTypeEnum.AUTHORIZATION_CODE).build())))
+                .clientAuthenticationMethods(new HashSet<>(Arrays.asList(AuthenticationMethod.builder().value(AuthenticationMethodEnum.CLIENT_SECRET_BASIC).build())))
                 .redirectUris("mock").scopes("mock").build();
         Mockito.when(registeredClientService.save(any(Client.class))).thenReturn(client);
         mockMvc.perform(post("/client/add")

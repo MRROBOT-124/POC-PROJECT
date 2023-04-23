@@ -6,12 +6,9 @@ import com.realtime.project.entity.AuthenticationMethod;
 import com.realtime.project.entity.Client;
 import com.realtime.project.entity.GrantType;
 import com.realtime.project.repository.ClientRepository;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,16 +19,15 @@ import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
-@ExtendWith(MockitoExtension.class)
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class RegisteredClientServiceTest {
 
     @MockBean
@@ -62,8 +58,8 @@ class RegisteredClientServiceTest {
         registeredClientService.save(Client.builder().id("mock").clientId("mock")
                 .clientSecret("mock")
                 .clientName("mock")
-                .authorizationGrantTypes(new HashSet<>(Arrays.asList(GrantType.builder().value(AuthorizationGrantTypeEnum.authorization_code).build())))
-                .clientAuthenticationMethods(new HashSet<>(Arrays.asList(AuthenticationMethod.builder().value(AuthenticationMethodEnum.client_secret_basic).build())))
+                .authorizationGrantTypes(new HashSet<>(Arrays.asList(GrantType.builder().value(AuthorizationGrantTypeEnum.AUTHORIZATION_CODE).build())))
+                .clientAuthenticationMethods(new HashSet<>(Arrays.asList(AuthenticationMethod.builder().value(AuthenticationMethodEnum.CLIENT_SECRET_BASIC).build())))
                 .redirectUris("mock").scopes("mock").build());
         Mockito.verify(clientRepository, Mockito.atMostOnce()).save(any(Client.class));
         Mockito.verify(passwordEncoder, Mockito.atMostOnce()).encode(anyString());
@@ -74,8 +70,8 @@ class RegisteredClientServiceTest {
         Client client = Client.builder().id("mock").clientId("mock")
                 .clientSecret("mock")
                 .clientName("mock")
-                .authorizationGrantTypes(new HashSet<>(Arrays.asList(GrantType.builder().value(AuthorizationGrantTypeEnum.authorization_code).build())))
-                .clientAuthenticationMethods(new HashSet<>(Arrays.asList(AuthenticationMethod.builder().value(AuthenticationMethodEnum.client_secret_basic).build())))
+                .authorizationGrantTypes(new HashSet<>(Arrays.asList(GrantType.builder().value(AuthorizationGrantTypeEnum.AUTHORIZATION_CODE).build())))
+                .clientAuthenticationMethods(new HashSet<>(Arrays.asList(AuthenticationMethod.builder().value(AuthenticationMethodEnum.CLIENT_SECRET_BASIC).build())))
                 .redirectUris("mock").scopes("mock").build();
         Mockito.when(clientRepository.findById(anyString())).thenReturn(Optional.of(client));
         RegisteredClient registeredClient = registeredClientService.findById("mock");
@@ -88,8 +84,8 @@ class RegisteredClientServiceTest {
         Client client = Client.builder().id("mock").clientId("mock")
                 .clientSecret("mock")
                 .clientName("mock")
-                .authorizationGrantTypes(new HashSet<>(Arrays.asList(GrantType.builder().value(AuthorizationGrantTypeEnum.authorization_code).build())))
-                .clientAuthenticationMethods(new HashSet<>(Arrays.asList(AuthenticationMethod.builder().value(AuthenticationMethodEnum.client_secret_basic).build())))
+                .authorizationGrantTypes(new HashSet<>(Arrays.asList(GrantType.builder().value(AuthorizationGrantTypeEnum.AUTHORIZATION_CODE).build())))
+                .clientAuthenticationMethods(new HashSet<>(Arrays.asList(AuthenticationMethod.builder().value(AuthenticationMethodEnum.CLIENT_SECRET_BASIC).build())))
                 .redirectUris("mock").scopes("mock").build();
         Mockito.when(clientRepository.findByClientId(anyString())).thenReturn(Optional.of(client));
         RegisteredClient registeredClient = registeredClientService.findByClientId("mock");

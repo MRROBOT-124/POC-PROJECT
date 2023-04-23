@@ -1,8 +1,10 @@
 package com.realtime.project.constants;
 
-import org.apache.kafka.common.protocol.types.Field;
-
 public final class HelperConstants {
+
+    private HelperConstants() {
+
+    }
 
     public static final String RSA = "RSA";
     public static final String ALLOW_ALL_CLIENT_ROUTES = "/client/*";

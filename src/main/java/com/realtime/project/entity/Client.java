@@ -1,14 +1,11 @@
 package com.realtime.project.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.util.SpringAuthorizationServerVersion;
 
 import java.io.Serializable;
-import java.rmi.server.UID;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.HashSet;
