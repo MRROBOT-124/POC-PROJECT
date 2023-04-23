@@ -139,10 +139,20 @@ public class RegisteredClientService implements RegisteredClientRepository {
                 .clientSecret(optionalClient.get().getClientSecret());
 
         optionalClient.get().getClientAuthenticationMethods().forEach(auth -> {
-            builder.clientAuthenticationMethod(new ClientAuthenticationMethod(auth.getValue().toString()));
+            if(auth.getValue().equals(AuthenticationMethodEnum.CLIENT_SECRET_BASIC)) {
+                builder.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
+            }
         });
         optionalClient.get().getAuthorizationGrantTypes().forEach(grant -> {
-            builder.authorizationGrantType(new AuthorizationGrantType(grant.getValue().toString()));
+            if(grant.getValue().equals(AuthorizationGrantTypeEnum.CLIENT_CREDENTIALS)) {
+                builder.authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS);
+            }
+            else if(grant.getValue().equals(AuthorizationGrantTypeEnum.AUTHORIZATION_CODE)) {
+                builder.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE);
+            }
+            else if(grant.getValue().equals(AuthorizationGrantTypeEnum.REFRESH_TOKEN)) {
+                builder.authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN);
+            }
         });
         log.info("Exited RegisteredClientService ---> findById() ---> Client Found for the following clientId: {}", clientId);
         return builder.redirectUri(optionalClient.get().getRedirectUris())
