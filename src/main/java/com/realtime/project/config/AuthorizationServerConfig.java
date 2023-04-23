@@ -46,7 +46,7 @@ public class AuthorizationServerConfig{
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authServerSecurityFilterChain(HttpSecurity http) throws Exception {
 
-        return http.csrf(csrf -> csrf.ignoringRequestMatchers("/user/*", "/client/*", "/oauth2/*"))
+        return http.csrf(csrf -> csrf.ignoringRequestMatchers(HelperConstants.ALLOW_ALL_USER_ROUTES, HelperConstants.ALLOW_ALL_CLIENT_ROUTES, HelperConstants.ALLOW_ALL_OAUTH2_ROUTES))
                 .authorizeHttpRequests(req -> req.requestMatchers(HelperConstants.ALLOW_ALL_CLIENT_ROUTES).permitAll())
                 .authorizeHttpRequests(req -> req.requestMatchers( HelperConstants.ALLOW_ALL_USER_ROUTES).permitAll())
                 .authorizeHttpRequests(req -> req.requestMatchers(HelperConstants.ALLOW_ALL_OAUTH2_ROUTES).permitAll())

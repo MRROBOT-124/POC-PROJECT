@@ -1,5 +1,6 @@
 package com.realtime.project.config;
 
+import com.realtime.project.constants.HelperConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class WebSecurityConfiguration {
 
-    @Autowired
-    private com.realtime.project.service.UserDetailsService userDetailsService;
+
 
     /**
      * SETTING DEFAULT WEB SECURITY FOR PROVIDING ACCESS TO THE END POINTS
@@ -25,8 +25,7 @@ public class WebSecurityConfiguration {
      */
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-                .userDetailsService(userDetailsService)
+        http.csrf(csrf -> csrf.ignoringRequestMatchers(HelperConstants.ALLOW_ALL_USER_ROUTES, HelperConstants.ALLOW_ALL_CLIENT_ROUTES, HelperConstants.ALLOW_ALL_OAUTH2_ROUTES))
                 .authorizeHttpRequests(authorizeRequests ->
               authorizeRequests.anyRequest().authenticated()
         ).formLogin(Customizer.withDefaults());
