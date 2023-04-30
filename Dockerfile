@@ -1,4 +1,4 @@
-FROM openjdk:20
+FROM openjdk:17
 MAINTAINER amithsai
 COPY ./build/libs/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "/app.jar"]

@@ -6,6 +6,7 @@ import com.realtime.project.entity.AuthenticationMethod;
 import com.realtime.project.entity.Client;
 import com.realtime.project.entity.GrantType;
 import com.realtime.project.repository.ClientRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@Transactional
 public class RegisteredClientService implements RegisteredClientRepository {
 
     @Autowired

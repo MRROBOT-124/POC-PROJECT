@@ -29,6 +29,7 @@ public class Client implements Serializable {
     @Id
     @Builder.Default
     private String id = UUID.randomUUID().toString() + "_" + LocalDateTime.now();
+    @Column(unique = true)
     private String clientId;
     private Instant clientIdIssuedAt;
     private String clientSecret;
