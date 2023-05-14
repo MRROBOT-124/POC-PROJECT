@@ -1,11 +1,17 @@
 package com.realtime.project.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.realtime.project.constants.AuthenticationMethodEnum;
 import com.realtime.project.constants.AuthorizationGrantTypeEnum;
+import com.realtime.project.constants.HelperConstants;
 import com.realtime.project.entity.AuthenticationMethod;
 import com.realtime.project.entity.Client;
 import com.realtime.project.entity.GrantType;
+import com.realtime.project.entity.OutboxEntity;
 import com.realtime.project.repository.ClientRepository;
+import com.realtime.project.repository.OutboxEventRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,10 +31,13 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@Transactional
 public class RegisteredClientService implements RegisteredClientRepository {
 
     @Autowired
     private ClientRepository clientRepository;
+    @Autowired
+    private OutboxEventRepository outboxEventRepository;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
@@ -63,10 +72,17 @@ public class RegisteredClientService implements RegisteredClientRepository {
                             }
                             return GrantType.builder().value(AuthorizationGrantTypeEnum.REFRESH_TOKEN).build();
                         }).collect(Collectors.toSet()))
-                .scopes(registeredClient.getScopes().stream().collect(Collectors.joining(",")))
-                .redirectUris(registeredClient.getRedirectUris().stream().collect(Collectors.joining(",")))
+                .scopes(String.join(",", registeredClient.getScopes()))
+                .redirectUris(String.join(",", registeredClient.getRedirectUris()))
                 .build();
+        OutboxEntity outboxEntity = OutboxEntity.builder().aggregateid(client.getId() + "_" + client.getClientName())
+                .type(HelperConstants.CLIENT)
+                .aggregatetype(HelperConstants.CLIENT)
+                .payload(OutboxEntity.convertJson(client)).build();
+
         clientRepository.save(client);
+
+        outboxEventRepository.save(outboxEntity);
         log.info("Exited RegisteredClientService ---> save() ---> Successfully persisted data");
     }
 
@@ -80,6 +96,11 @@ public class RegisteredClientService implements RegisteredClientRepository {
     public Client save(Client client) {
         log.info("Entered RegisteredClientService ---> save() --> Attempting to persist client information");
         client.setClientSecret(passwordEncoder.encode(client.getClientSecret()));
+        OutboxEntity outboxEntity = OutboxEntity.builder().aggregateid(client.getId() + "_" + client.getClientName())
+                .type(HelperConstants.CLIENT)
+                .aggregatetype(HelperConstants.CLIENT)
+                .payload(OutboxEntity.convertJson(client)).build();
+        outboxEventRepository.save(outboxEntity);
         log.info("Exited RegisteredClientService ---> save() ---> Successfully persisted data");
         return clientRepository.save(client);
     }
@@ -89,13 +110,12 @@ public class RegisteredClientService implements RegisteredClientRepository {
      * FINDS THE CLIENT BY USING CUSTOM GENERATED ID (RANDOM NUMBER + TIMESTAMP)
      * AND RETURNS THE CLIENT FOR AUTHENTICATION
      * @param id the registration identifier
-     * @return
      */
     @Override
     public RegisteredClient findById(String id) {
         log.info("Entered RegisteredClientService ---> findById() ---> Attempting to find client details by using random generated id for the client");
         Optional<Client> optionalClient = clientRepository.findById(id);
-        if(!optionalClient.isPresent()) {
+        if(optionalClient.isEmpty()) {
             log.error("Client does not exists under the following id: {}", id);
             return null;
         }
@@ -123,13 +143,12 @@ public class RegisteredClientService implements RegisteredClientRepository {
      * FINDS THE CLIENT BY USING CLIENT ID AND RETURNS
      * THE CLIENT FOR AUTHENTICATION
      * @param clientId the client identifier
-     * @return
      */
     @Override
     public RegisteredClient findByClientId(String clientId) {
         log.info("Entered RegisteredClientService ---> findById() ---> Attempting to find client details by using random generated id for the client");
         Optional<Client> optionalClient = clientRepository.findByClientId(clientId);
-        if(!optionalClient.isPresent()) {
+        if(optionalClient.isEmpty()) {
             log.error("Client does not exists under the following id: {}", clientId);
             return null;
         }
