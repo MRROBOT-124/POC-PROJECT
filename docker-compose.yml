@@ -1,24 +1,93 @@
 version: '3.9'
 services:
-  postgres:
-    image: 'debezium/postgres:15-alpine'
-    container_name: postgres
+  jaeger:
+    image: jaegertracing/all-in-one:1
     ports:
-      - '5432:5432'
+      - '6831:6831/udp'
+      - '16686:16686'
+  zookeeper:
+    image: quay.io/debezium/zookeeper:1.8
+    ports:
+      - '2181:2181'
+      - '2888:2888'
+      - '3888:3888'
+  kafka:
+    image: quay.io/debezium/kafka:1.8
+    ports:
+      - '9092:9092'
+    links:
+      - zookeeper
+    environment:
+      - ZOOKEEPER_CONNECT=zookeeper:2181
+  postgres:
+    image:  debezium/postgres:15-alpine
+    ports:
+      - '5433:5432'
+    healthcheck:
+      test: "pg_isready -U admin -d auth"
+      interval: 2s
+      timeout: 20s
+      retries: 10
     environment:
       - POSTGRES_DB=auth
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=password
-#  prometheus:
-#    image: prom/prometheus
-#    container_name: prometheus
-#    ports:
-#      - "9090:9090"
-#    restart: always
-#  grafana:
-#    image: grafana/grafana
-#    container_name: grafana
-#    depends_on:
-#      - prometheus
-#    ports:
-#      - "3000:3000"
+      - PGPASSWORD=postgrespw
+  connect:
+    image: debezium/strimzi-connect
+    build:
+      context: .
+    ports:
+      - '8083:8083'
+    links:
+      - kafka
+      - postgres
+    environment:
+      - KAFKA_LOG4J_OPTS=-Dlog4j.configuration=file:/opt/kafka/config/connect-log4j.properties
+      - KAFKA_CONNECT_BOOTSTRAP_SERVERS=kafka:9092
+      - |
+        KAFKA_CONNECT_CONFIGURATION=
+        key.converter=org.apache.kafka.connect.json.JsonConverter
+        value.converter=org.apache.kafka.connect.json.JsonConverter
+        key.converter.schemas.enable=false
+        value.converter.schemas.enable=false
+        group.id=connect
+        offset.storage.topic=connect-offsets
+        offset.storage.replication.factor=1
+        config.storage.topic=connect-configs
+        config.storage.replication.factor=1
+        status.storage.topic=connect-status
+        status.storage.replication.factor=1
+        consumer.interceptor.classes=io.opentracing.contrib.kafka.TracingConsumerInterceptor
+        producer.interceptor.classes=io.opentracing.contrib.kafka.TracingProducerInterceptor
+      - JAEGER_SERVICE_NAME=kafka-connect
+      - JAEGER_AGENT_HOST=jaeger
+      - JAEGER_SAMPLER_TYPE=const
+      - JAEGER_SAMPLER_PARAM=1
+      - STRIMZI_TRACING=jaeger
+    command: /opt/kafka/kafka_connect_run.sh
+  kafka-ui:
+    image: provectuslabs/kafka-ui
+    container_name: kafka-ui
+    ports:
+      - "8090:8080"
+    links:
+      - zookeeper
+      - kafka
+    restart: always
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+  debezium-ui:
+    container_name: debezium-ui
+    image: quay.io/debezium/debezium-ui:1.8
+    ports:
+      - "8080:8080"
+    environment:
+      - KAFKA_CONNECT_URIS=http://connect:8083
+    links:
+      - connect
+    depends_on:
+      connect:
+        condition: service_started

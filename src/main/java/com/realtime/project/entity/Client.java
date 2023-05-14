@@ -5,9 +5,12 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.oauth2.server.authorization.util.SpringAuthorizationServerVersion;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -25,15 +28,18 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Client implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = SpringAuthorizationServerVersion.SERIAL_VERSION_UID;
     @Id
     @Builder.Default
     private String id = UUID.randomUUID().toString() + "_" + LocalDateTime.now();
     @Column(unique = true)
     private String clientId;
-    private Instant clientIdIssuedAt;
+    @Builder.Default
+    private Instant clientIdIssuedAt = Instant.now();
     private String clientSecret;
-    private Instant clientSecretExpiresAt;
+    @Builder.Default
+    private Instant clientSecretExpiresAt = Instant.now().plus(360, ChronoUnit.DAYS);
     private String clientName;
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, mappedBy = "client",
             orphanRemoval = true, targetEntity = AuthenticationMethod.class, fetch = FetchType.EAGER)
@@ -50,19 +56,17 @@ public class Client implements Serializable {
 
     /**
      * UTILITY METHODS FOR RELATIONSHIP MAPPING
-     * @param authenticationMethod
      */
     public void setClientAuthenticationMethods(Set<AuthenticationMethod> authenticationMethod) {
 
         clientAuthenticationMethods.addAll(authenticationMethod);
-        authenticationMethod.stream().forEach(i -> i.setClient(this));
+        authenticationMethod.forEach(i -> i.setClient(this));
     }
     public void setAuthorizationGrantTypes(Set<GrantType> grantTypes) {
 
         authorizationGrantTypes.addAll(grantTypes);
-        grantTypes.stream().forEach(i -> i.setClient(this));
+        grantTypes.forEach(i -> i.setClient(this));
     }
-
 
 
 
