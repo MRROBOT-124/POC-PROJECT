@@ -5,11 +5,27 @@ spring:
   jpa:
     hibernate:
       ddl-auto: 'create'
-#    show-sql: true
+    show-sql: true
   datasource:
     hikari:
       connection-timeout: 20000
       maximum-pool-size: 5
-    url: jdbc:postgresql://localhost:5432/pocproject
-    username: postgres
-    password: A!m@12ith
+    url: jdbc:postgresql://localhost:5433/auth
+    username: admin
+    password: password
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include:
+          - "health"
+          - "prometheus"
+          - "metrics"
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true

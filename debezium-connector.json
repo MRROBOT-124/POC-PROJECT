@@ -1,0 +1,15 @@
+{
+  "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+  "tasks.max": "1",
+  "database.hostname": "postgres",
+  "database.port": "5432",
+  "database.user": "admin",
+  "database.password": "password",
+  "database.dbname" : "auth",
+  "database.server.name": "authorization",
+  "schema.include.list": "public",
+  "table.include.list" : "public.client,public.authentication_method,public.grant_type",
+  "tombstones.on.delete" : "false",
+  "transforms": "unwrap",
+  "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState"
+}
