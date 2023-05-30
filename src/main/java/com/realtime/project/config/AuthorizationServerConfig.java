@@ -12,6 +12,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.web.SecurityFilterChain;
@@ -38,9 +39,9 @@ public class AuthorizationServerConfig{
      * INCLUDING DEFAULT LOGIN PAGE PROVIDED BY SPRING FOR ENTERING THE USER
      * CREDENTIALS
      * NOTE: USER CREDENTIALS NOT CLIENT CREDENTIALS
-     * @param http
-     * @return
-     * @throws Exception
+     * @param http "http"
+     * @return SecurityFilterChain
+     * @throws Exception "Exception"
      */
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -53,7 +54,7 @@ public class AuthorizationServerConfig{
                 .authorizeHttpRequests(req -> req.requestMatchers(HelperConstants.ALLOW_ALL_OAUTH2_ROUTES).permitAll())
                 .authorizeHttpRequests(req -> req.requestMatchers(HelperConstants.ALLOW_ACTUATOR_ENDPOINTS).permitAll())
                 .authorizeHttpRequests(req -> req.anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults())
+                .oauth2ResourceServer(resource -> resource.jwt(Customizer.withDefaults()))
                .build();
     }
 
