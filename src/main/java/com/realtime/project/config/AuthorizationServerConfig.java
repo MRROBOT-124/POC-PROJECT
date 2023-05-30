@@ -48,11 +48,12 @@ public class AuthorizationServerConfig{
     public SecurityFilterChain authServerSecurityFilterChain(HttpSecurity http) throws Exception {
 
         return http.csrf(csrf -> csrf.ignoringRequestMatchers(HelperConstants.ALLOW_ALL_USER_ROUTES, HelperConstants.ALLOW_ALL_CLIENT_ROUTES,
-                        HelperConstants.ALLOW_ALL_OAUTH2_ROUTES, HelperConstants.ALLOW_ACTUATOR_ENDPOINTS))
+                        HelperConstants.ALLOW_ALL_OAUTH2_ROUTES, HelperConstants.ALLOW_ACTUATOR_ENDPOINTS, HelperConstants.ALLOW_GRAPHQL_ENDPOINT))
                 .authorizeHttpRequests(req -> req.requestMatchers(HelperConstants.ALLOW_ALL_CLIENT_ROUTES).permitAll())
                 .authorizeHttpRequests(req -> req.requestMatchers( HelperConstants.ALLOW_ALL_USER_ROUTES).permitAll())
                 .authorizeHttpRequests(req -> req.requestMatchers(HelperConstants.ALLOW_ALL_OAUTH2_ROUTES).permitAll())
                 .authorizeHttpRequests(req -> req.requestMatchers(HelperConstants.ALLOW_ACTUATOR_ENDPOINTS).permitAll())
+                .authorizeHttpRequests(req -> req.requestMatchers(HelperConstants.ALLOW_GRAPHQL_ENDPOINT).permitAll())
                 .authorizeHttpRequests(req -> req.anyRequest().authenticated())
                 .oauth2ResourceServer(resource -> resource.jwt(Customizer.withDefaults()))
                .build();

@@ -52,7 +52,7 @@ public class UserInfo implements org.springframework.security.core.userdetails.U
     public void setAuthorities(List<Authorities> authorities) {
         this.authorities = new ArrayList<>();
         this.authorities.addAll(authorities);
-        authorities.stream().forEach(authority -> authority.setUserDetails(this));
+        authorities.forEach(authority -> authority.setUserDetails(this));
     }
 
     @Override
