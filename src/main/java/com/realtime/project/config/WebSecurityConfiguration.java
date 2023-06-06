@@ -24,7 +24,7 @@ public class WebSecurityConfiguration {
      */
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.ignoringRequestMatchers(HelperConstants.ALLOW_ALL_USER_ROUTES, HelperConstants.ALLOW_ALL_CLIENT_ROUTES, HelperConstants.ALLOW_ALL_OAUTH2_ROUTES, HelperConstants.ALLOW_ACTUATOR_ENDPOINTS))
+        http.csrf(csrf -> csrf.ignoringRequestMatchers(HelperConstants.ALLOW_ALL_USER_ROUTES, HelperConstants.ALLOW_ALL_CLIENT_ROUTES, HelperConstants.ALLOW_ALL_OAUTH2_ROUTES, HelperConstants.ALLOW_ACTUATOR_ENDPOINTS, HelperConstants.ALLOW_GRAPHQL_ENDPOINT))
                 .authorizeHttpRequests(authorizeRequests ->
               authorizeRequests.anyRequest().authenticated()
         ).formLogin(Customizer.withDefaults());

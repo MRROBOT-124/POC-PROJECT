@@ -1,7 +1,5 @@
 package com.realtime.project.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.realtime.project.constants.AuthenticationMethodEnum;
 import com.realtime.project.constants.AuthorizationGrantTypeEnum;
 import com.realtime.project.constants.HelperConstants;
@@ -79,9 +77,7 @@ public class RegisteredClientService implements RegisteredClientRepository {
                 .type(HelperConstants.CLIENT)
                 .aggregatetype(HelperConstants.CLIENT)
                 .payload(OutboxEntity.convertJson(client)).build();
-
         clientRepository.save(client);
-
         outboxEventRepository.save(outboxEntity);
         log.info("Exited RegisteredClientService ---> save() ---> Successfully persisted data");
     }
@@ -126,10 +122,10 @@ public class RegisteredClientService implements RegisteredClientRepository {
                 .clientSecret(optionalClient.get().getClientSecret());
 
         optionalClient.get().getClientAuthenticationMethods().forEach(auth ->
-            builder.clientAuthenticationMethod(new ClientAuthenticationMethod(auth.getValue().toString()))
+            builder.clientAuthenticationMethod(new ClientAuthenticationMethod(auth.getValue().name()))
         );
         optionalClient.get().getAuthorizationGrantTypes().forEach(grant ->
-            builder.authorizationGrantType(new AuthorizationGrantType(grant.getValue().toString()))
+            builder.authorizationGrantType(new AuthorizationGrantType(grant.getValue().name()))
         );
         log.info("Exited RegisteredClientService ---> findById() ---> Client Found for the following id: {}", id);
         return builder.redirectUri(optionalClient.get().getRedirectUris())
@@ -158,18 +154,18 @@ public class RegisteredClientService implements RegisteredClientRepository {
                 .clientSecret(optionalClient.get().getClientSecret());
 
         optionalClient.get().getClientAuthenticationMethods().forEach(auth -> {
-            if(auth.getValue().equals(AuthenticationMethodEnum.CLIENT_SECRET_BASIC)) {
+            if(auth.getValue().name().equalsIgnoreCase(AuthenticationMethodEnum.CLIENT_SECRET_BASIC.name())) {
                 builder.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
             }
         });
         optionalClient.get().getAuthorizationGrantTypes().forEach(grant -> {
-            if(grant.getValue().equals(AuthorizationGrantTypeEnum.CLIENT_CREDENTIALS)) {
+            if(grant.getValue().name().equals(AuthorizationGrantTypeEnum.CLIENT_CREDENTIALS.name())) {
                 builder.authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS);
             }
-            else if(grant.getValue().equals(AuthorizationGrantTypeEnum.AUTHORIZATION_CODE)) {
+            else if(grant.getValue().name().equals(AuthorizationGrantTypeEnum.AUTHORIZATION_CODE.name())) {
                 builder.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE);
             }
-            else if(grant.getValue().equals(AuthorizationGrantTypeEnum.REFRESH_TOKEN)) {
+            else if(grant.getValue().name().equals(AuthorizationGrantTypeEnum.REFRESH_TOKEN.name())) {
                 builder.authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN);
             }
         });

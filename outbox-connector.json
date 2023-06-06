@@ -8,7 +8,7 @@
   "database.dbname" : "auth",
   "database.server.name": "authorization",
   "schema.include.list": "public",
-  "table.include.list" : "public.outbox_entity",
+  "table.include.list" : "public.outbox_entity,public.outbox_website_entity",
   "tombstones.on.delete" : "false",
   "transforms" : "outbox",
   "transforms.outbox.type" : "io.debezium.transforms.outbox.EventRouter",

@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.ZonedDateTime;
 
-//@RestControllerAdvice
+@RestControllerAdvice
 public class UniqueConstraintExceptionsHandler {
 
-//    @ExceptionHandler(value = {DataIntegrityViolationException.class})
+    @ExceptionHandler(value = {DataIntegrityViolationException.class})
     public ResponseEntity<ExceptionFormat> handleUniqueConstraintExceptions(Exception ex) {
         String message = ExceptionUtils.getRootCause(ex).getMessage().split("Detail: ")[1];
         return new ResponseEntity<>(ExceptionFormat.builder().message(message).httpStatus(HttpStatus.BAD_REQUEST).dateTime(ZonedDateTime.now()).build(), HttpStatus.BAD_REQUEST);

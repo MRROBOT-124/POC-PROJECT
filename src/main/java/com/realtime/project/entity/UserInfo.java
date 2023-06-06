@@ -1,5 +1,6 @@
 package com.realtime.project.entity;
 
+
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -39,6 +40,10 @@ public class UserInfo implements org.springframework.security.core.userdetails.U
     private boolean enabled;
     @Builder.Default
     private Instant createdAt = Instant.now();
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+            targetEntity = Website.class, mappedBy = "userDetails", orphanRemoval = true, fetch = FetchType.EAGER)
+    @Builder.Default
+    private List<Website> websites = new ArrayList<>();
 
     public List<Authorities> getAuthoritiesList() {
         return this.authorities;
@@ -50,10 +55,15 @@ public class UserInfo implements org.springframework.security.core.userdetails.U
     }
 
     public void setAuthorities(List<Authorities> authorities) {
-        this.authorities = new ArrayList<>();
         this.authorities.addAll(authorities);
-        authorities.stream().forEach(authority -> authority.setUserDetails(this));
+        authorities.forEach(authority -> authority.setUserDetails(this));
     }
+
+    public void setWebsites(List<Website> websites) {
+        this.websites.addAll(websites);
+        websites.forEach(website -> website.setUserDetails(this));
+    }
+
 
     @Override
     public String getPassword() {

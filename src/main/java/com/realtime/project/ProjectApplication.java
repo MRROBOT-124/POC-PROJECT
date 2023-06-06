@@ -15,7 +15,7 @@ public class ProjectApplication {
 	/**
 	 * PASSWORD ENCODER USED TO ENCODE PASSWORDS
 	 * WHILE STORING INTO DATABASE
-	 * @return
+	 * @return "BCRYPT PASSWORD ENCODER"
 	 */
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
