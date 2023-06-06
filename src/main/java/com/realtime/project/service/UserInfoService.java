@@ -1,6 +1,8 @@
 package com.realtime.project.service;
 
+
 import com.realtime.project.entity.UserInfo;
+import com.realtime.project.entity.Website;
 import com.realtime.project.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +39,12 @@ public class UserInfoService implements org.springframework.security.core.userde
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.info("Entered UserInfoService ---> findUser() ---> Attempting to find User details by using username");
         Optional<UserInfo> optionalUserDetails = userRepository.findById(username);
         if(optionalUserDetails.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         }
+        log.info("Entered UserInfoService ---> findUser() ---> Successfully retrieved user");
         return optionalUserDetails.get();
     }
 
@@ -50,8 +54,10 @@ public class UserInfoService implements org.springframework.security.core.userde
      * @return "USER INFO"
      */
     public UserInfo persistUser(UserInfo userDetails) {
+        log.info("Entered UserInfoService ---> findUser() ---> Attempting persist user");
         userDetails.setAuthorities(userDetails.getAuthoritiesList());
         userDetails.setPassword(bCryptPasswordEncoder.encode(userDetails.getPassword()));
+        log.info("Entered UserInfoService ---> findUser() ---> persisted user successfully");
         return userRepository.save(userDetails);
     }
 
@@ -84,5 +90,18 @@ public class UserInfoService implements org.springframework.security.core.userde
         }
         log.info("Entered UserInfoService ---> findUser() ---> Successfully retrieved user");
         return userInfoList;
+    }
+
+    public UserInfo submitWebsite(List<Website> website, String username) {
+        log.info("Entered UserInfoService ---> submitWebsite() ---> Attempting to find User details by using username");
+        Optional<UserInfo> optionalUserDetails = userRepository.findById(username);
+        if(optionalUserDetails.isEmpty()) {
+            throw new UsernameNotFoundException("User not found");
+        }
+        log.info("Entered UserInfoService ---> submitWebsite() ---> Successfully retrieved user");
+        UserInfo userInfo = optionalUserDetails.get();
+        userInfo.setWebsites(website);
+        log.info("Entered UserInfoService ---> submitWebsite() ---> Successfully linked user with website");
+        return userRepository.save(userInfo);
     }
 }

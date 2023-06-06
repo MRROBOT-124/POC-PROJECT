@@ -63,8 +63,8 @@ public class AuthorizationServerConfig{
 
     /**
      * USED TO SET UP THE JWT ACCESS TOKEN WHICH WILL BE SENT AS A RESPONSE
-     * @return
-     * @throws NoSuchAlgorithmException
+     * @return "JWKSource"
+     * @throws NoSuchAlgorithmException "NO SUCH ALGORITHM"
      */
     @Bean
     public JWKSource<SecurityContext> jwkSource() throws NoSuchAlgorithmException {
@@ -91,7 +91,7 @@ public class AuthorizationServerConfig{
 
     /**
      * DEFINING DEFAULT AUTHORIZATION SERVER SETTINGS
-     * @return
+     * @return "AuthorizationServerSettings"
      */
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {

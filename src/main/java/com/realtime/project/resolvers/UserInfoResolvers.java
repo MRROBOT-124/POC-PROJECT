@@ -2,7 +2,6 @@ package com.realtime.project.resolvers;
 
 import com.coxautodev.graphql.tools.GraphQLMutationResolver;
 import com.coxautodev.graphql.tools.GraphQLQueryResolver;
-import com.coxautodev.graphql.tools.GraphQLResolver;
 import com.realtime.project.entity.UserInfo;
 import com.realtime.project.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
