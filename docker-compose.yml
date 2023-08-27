@@ -37,8 +37,11 @@ services:
     image: debezium/strimzi-connect
     build:
       context: .
+      args:
+        DEBEZIUM_CONNECTOR_VERSION: "${DEBEZIUM_CONNECTOR_VERSION:-2.4.0.Alpha2}"
+        STRIMZI_VERSION: "${STRIMZI_VERSION:-latest-kafka-3.5.1}"
     ports:
-      - '8083:8083'
+      - 8083:8083
     links:
       - kafka
       - postgres
@@ -58,13 +61,13 @@ services:
         config.storage.replication.factor=1
         status.storage.topic=connect-status
         status.storage.replication.factor=1
-        consumer.interceptor.classes=io.opentracing.contrib.kafka.TracingConsumerInterceptor
-        producer.interceptor.classes=io.opentracing.contrib.kafka.TracingProducerInterceptor
-      - JAEGER_SERVICE_NAME=kafka-connect
-      - JAEGER_AGENT_HOST=jaeger
-      - JAEGER_SAMPLER_TYPE=const
-      - JAEGER_SAMPLER_PARAM=1
-      - STRIMZI_TRACING=jaeger
+        producer.interceptor.classes=io.debezium.tracing.DebeziumTracingProducerInterceptor
+      - OTEL_SERVICE_NAME=kafka-connect
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_METRICS_EXPORTER=none
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
+      - OTEL_TRACES_SAMPLER=always_on
+      - STRIMZI_TRACING=opentelemetry
     command: /opt/kafka/kafka_connect_run.sh
   kafka-ui:
     image: provectuslabs/kafka-ui

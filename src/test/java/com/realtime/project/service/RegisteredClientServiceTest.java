@@ -18,7 +18,7 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 
@@ -58,8 +58,8 @@ class RegisteredClientServiceTest {
         registeredClientService.save(Client.builder().id("mock").clientId("mock")
                 .clientSecret("mock")
                 .clientName("mock")
-                .authorizationGrantTypes(new HashSet<>(Arrays.asList(GrantType.builder().value(AuthorizationGrantTypeEnum.AUTHORIZATION_CODE).build())))
-                .clientAuthenticationMethods(new HashSet<>(Arrays.asList(AuthenticationMethod.builder().value(AuthenticationMethodEnum.CLIENT_SECRET_BASIC).build())))
+                .authorizationGrantTypes(new HashSet<>(Collections.singletonList(GrantType.builder().value(AuthorizationGrantTypeEnum.AUTHORIZATION_CODE).build())))
+                .clientAuthenticationMethods(new HashSet<>(Collections.singletonList(AuthenticationMethod.builder().value(AuthenticationMethodEnum.CLIENT_SECRET_BASIC).build())))
                 .redirectUris("mock").scopes("mock").build());
         Mockito.verify(clientRepository, Mockito.atMostOnce()).save(any(Client.class));
         Mockito.verify(passwordEncoder, Mockito.atMostOnce()).encode(anyString());
@@ -70,8 +70,8 @@ class RegisteredClientServiceTest {
         Client client = Client.builder().id("mock").clientId("mock")
                 .clientSecret("mock")
                 .clientName("mock")
-                .authorizationGrantTypes(new HashSet<>(Arrays.asList(GrantType.builder().value(AuthorizationGrantTypeEnum.AUTHORIZATION_CODE).build())))
-                .clientAuthenticationMethods(new HashSet<>(Arrays.asList(AuthenticationMethod.builder().value(AuthenticationMethodEnum.CLIENT_SECRET_BASIC).build())))
+                .authorizationGrantTypes(new HashSet<>(Collections.singletonList(GrantType.builder().value(AuthorizationGrantTypeEnum.AUTHORIZATION_CODE).build())))
+                .clientAuthenticationMethods(new HashSet<>(Collections.singletonList(AuthenticationMethod.builder().value(AuthenticationMethodEnum.CLIENT_SECRET_BASIC).build())))
                 .redirectUris("mock").scopes("mock").build();
         Mockito.when(clientRepository.findById(anyString())).thenReturn(Optional.of(client));
         RegisteredClient registeredClient = registeredClientService.findById("mock");
@@ -84,8 +84,8 @@ class RegisteredClientServiceTest {
         Client client = Client.builder().id("mock").clientId("mock")
                 .clientSecret("mock")
                 .clientName("mock")
-                .authorizationGrantTypes(new HashSet<>(Arrays.asList(GrantType.builder().value(AuthorizationGrantTypeEnum.AUTHORIZATION_CODE).build())))
-                .clientAuthenticationMethods(new HashSet<>(Arrays.asList(AuthenticationMethod.builder().value(AuthenticationMethodEnum.CLIENT_SECRET_BASIC).build())))
+                .authorizationGrantTypes(new HashSet<>(Collections.singletonList(GrantType.builder().value(AuthorizationGrantTypeEnum.AUTHORIZATION_CODE).build())))
+                .clientAuthenticationMethods(new HashSet<>(Collections.singletonList(AuthenticationMethod.builder().value(AuthenticationMethodEnum.CLIENT_SECRET_BASIC).build())))
                 .redirectUris("mock").scopes("mock").build();
         Mockito.when(clientRepository.findByClientId(anyString())).thenReturn(Optional.of(client));
         RegisteredClient registeredClient = registeredClientService.findByClientId("mock");

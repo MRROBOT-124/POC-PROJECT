@@ -1,0 +1,92 @@
+scalar Instant
+
+type Query {
+    getUserGraphQL(username: String): UserInfo,
+    getAllUserGraphQL: [UserInfo],
+    findByClientIdGraphQL(clientID: String): Client,
+    findByIdGraphQL(id: String): Client
+}
+
+type Mutation {
+    registerNewUserGraphQL(userInfo: UserInfoInput): UserInfo,
+    registerClientGraphQL(client: ClientInput): Client
+}
+
+type UserInfo {
+    username: ID,
+    password: String,
+    email: String,
+    authorities: [Authorities],
+    accountNonExpired: Boolean,
+    accountNonLocked: Boolean,
+    credentialsNonExpired: Boolean,
+    enabled: Boolean,
+    createdAt: Instant
+}
+
+type Authorities {
+    id: ID,
+    authority: String
+}
+
+type Client {
+    id: ID,
+    clientId: String,
+    clientIdIssuedAt: Instant,
+    clientSecret: String,
+    clientSecretExpiresAt: Instant,
+    clientName: String,
+    clientAuthenticationMethods: [AuthenticationMethod],
+    authorizationGrantTypes: [GrantType],
+    redirectUris: String,
+    scopes: String
+}
+
+type AuthenticationMethod {
+    id: ID,
+    value: String
+}
+
+type GrantType {
+    id: ID,
+    value: String
+}
+
+input UserInfoInput {
+    username: ID,
+    password: String,
+    email: String,
+    authorities: [AuthoritiesInput],
+    accountNonExpired: Boolean,
+    accountNonLocked: Boolean,
+    credentialsNonExpired: Boolean,
+    enabled: Boolean,
+}
+
+input AuthoritiesInput {
+    authority: String
+}
+
+
+input ClientInput {
+    id: ID,
+    clientId: String,
+    clientIdIssuedAt: Instant,
+    clientSecret: String,
+    clientSecretExpiresAt: Instant,
+    clientName: String,
+    clientAuthenticationMethods: [AuthenticationMethodInput],
+    authorizationGrantTypes: [GrantTypeInput],
+    redirectUris: String,
+    scopes: String
+}
+
+input AuthenticationMethodInput {
+    id: ID,
+    value: String
+}
+
+input GrantTypeInput {
+    id: ID,
+    value: String
+}
