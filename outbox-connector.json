@@ -1,6 +1,7 @@
 {
   "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
   "tasks.max": "1",
+  "topic.prefix": "auth",
   "database.hostname": "postgres",
   "database.port": "5432",
   "database.user": "admin",
